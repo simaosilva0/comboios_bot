@@ -10,6 +10,7 @@ DEST = os.environ.get("DEST", "Lisboa Santa Apolonia")
 DATE = os.environ.get("DATE", "20/11/2025")    
 LOWER_LIMIT= os.environ.get("LOWER_LIMIT", "08:30") 
 UPPER_LIMIT= os.environ.get("UPPER_LIMIT", "17:00") 
+SERVICE = os.environ.get("SERVICE", "Intercidades")
 
 # returns True if hour is inside the range of hours
 def compare_hours(hour_str, lower_str, upper_str):
@@ -23,14 +24,16 @@ def compare_hours(hour_str, lower_str, upper_str):
     
     
 def run(playwright: Playwright):
-    browser = playwright.chromium.launch(headless=True)
+    browser = playwright.chromium.launch(headless=False)
     page = browser.new_page()
     
     print("Going to https://www.cp.pt/pt...")
     page.goto("https://www.cp.pt/pt")
     
     time.sleep(0.8)
+    
     page.locator("#onetrust-accept-btn-handler").click() 
+    
     time.sleep(0.8)
 
     print(f"Searching for: {ORIGIN} -> {DEST} on {DATE}")
@@ -48,11 +51,24 @@ def run(playwright: Playwright):
     page.locator("#ida").fill(DATE)
     
     time.sleep(0.8)
+    
     page.click('[aria-label="Pesquisar viagens"]') 
+    
     time.sleep(0.8)
     
+    page.get_by_label("Filtrar resultados").click()
+    
+    time.sleep(0.8)
+    
+    page.get_by_role("button", name=SERVICE).click()
+    
+    time.sleep(0.8)
+    
+    page.get_by_role("button", name="Aplicar filtros").click()
+    
+    time.sleep(0.8)
+
     n_trips_by_date = page.locator(".departure-time").count()
-    print("Number of trips: ", n_trips_by_date)
     
     time.sleep(0.8)
     
