@@ -9,7 +9,7 @@ ORIGIN = os.environ.get("ORIGIN", "Porto Campanha")
 DEST = os.environ.get("DEST", "Lisboa Santa Apolonia")
 DATE = os.environ.get("DATE", "20/11/2025")    
 LOWER_LIMIT= os.environ.get("LOWER_LIMIT", "08:30") 
-UPPER_LIMIT= os.environ.get("UPPER_LIMIT", "17:00") 
+UPPER_LIMIT= os.environ.get("UPPER_LIMIT", "17:30") 
 SERVICE = os.environ.get("SERVICE", "Intercidades")
 
 # returns True if hour is inside the range of hours
@@ -72,13 +72,31 @@ def run(playwright: Playwright):
     
     time.sleep(0.8)
     
-    j = 0
     for i in range(n_trips_by_date):
         departure_time = page.locator(".departure-time").nth(i).inner_text()
         
         if compare_hours(departure_time, LOWER_LIMIT, UPPER_LIMIT) ==  True:
-            j += 1
-            print(f"Departure Time {j}: {departure_time}")
+            print(f"First Departure Time: {departure_time}")
+            
+            label_start = f"Selecionar ida das {departure_time}"
+            
+            # we use the ^= from CSS to search for text that starts with label_start
+            page.locator(f"[aria-label^='{label_start}']").click()
+            
+            time.sleep(0.8)
+            
+            page.locator("[aria-label='Comprar esta viagem (abre nova janela modal)']").click()          
+            
+            time.sleep(0.8)
+            
+            page.locator(".custom-checkbox").click()
+            
+            time.sleep(0.8)
+            
+            page.locator(".confirm-button").click()
+            
+            break
+            
     
     time.sleep(0.8)
     
