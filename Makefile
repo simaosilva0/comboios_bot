@@ -4,6 +4,8 @@
 ORIGIN = "Porto Campanha"
 DEST = "Lisboa Santa Apolonia"
 DATE = "20/11/2025"
+LOWER_LIMIT = "08:30" 
+UPPER_LIMIT = "17:00" 
 
 run:
 	@echo "-- Starting Scraper --"
