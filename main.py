@@ -36,6 +36,16 @@ def run(playwright: Playwright):
     time.sleep(0.5)
     page.click('[aria-label="Pesquisar viagens"]') 
     time.sleep(0.5)
+    
+    n_trips = page.locator(".departure-time").count()
+    print("Number of trips: ", n_trips)
+    
+    time.sleep(0.5)
+    
+    for i in range(n_trips):
+        print("Departure Time: ", page.locator(".departure-time").nth(i).inner_text()) 
+    
+    time.sleep(0.5)
 
     page.screenshot(path="cp_screenshot.png")
     print("Screenshot saved as 'cp_screenshot.png'")
