@@ -1,11 +1,11 @@
 # --- Makefile ---
 
 # define default variables, these can be easily changed when running the program 
-ORIGIN = "Porto Campanha"
+ORIGIN = "Espinho"
 DEST = "Lisboa Santa Apolonia"
-DATE = "20/11/2025"
-LOWER_LIMIT = "08:30" 
-UPPER_LIMIT = "09:30"
+DATE = "17/11/2025"
+LOWER_LIMIT = "07:30" 
+UPPER_LIMIT = "08:30"
 SERVICE = "Intercidades" 
 
 run:
