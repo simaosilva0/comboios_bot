@@ -1,41 +1,42 @@
 from playwright.sync_api import sync_playwright, Playwright
 import time
+import os
+
+# read variables from env, if it isnt set use default values
+ORIGIN = os.environ.get("ORIGIN", "Porto Campanha")
+DEST = os.environ.get("DEST", "Lisboa Santa Apolonia")
+DATE = os.environ.get("DATE", "20/11/2025")
+
 
 def run(playwright: Playwright):
-    # this will open a browser window, set headless to True for invisibility
     browser = playwright.chromium.launch(headless=False)
-    
     page = browser.new_page()
     
     print("Going to https://www.cp.pt/pt...")
     page.goto("https://www.cp.pt/pt")
     
-    # wait for page to load
-    time.sleep(0.5) # TODO replace with better waits
-    
-    page.locator("#onetrust-accept-btn-handler").click() # accept cookies button
-    
     time.sleep(0.5)
-    
-    page.get_by_placeholder("Origem").fill("Porto Campanha") # fill origin
-    page.get_by_role("option", name="Porto Campanha").click()
-    
-    time.sleep(0.5)
-    
-    page.get_by_placeholder("Destino").fill("Lisboa Santa Apolonia") # fill destiny
-    page.get_by_role("option", name="Lisboa Santa Apolonia").click()
-    
-    time.sleep(0.5)
-    
-    page.locator("#ida").fill("20/11/2025") # fill date
-    
-    time.sleep(0.5)
-    
-    page.click('[aria-label="Pesquisar viagens"]') # click search
-    
+    page.locator("#onetrust-accept-btn-handler").click() 
     time.sleep(0.5)
 
-    # Take a screenshot to see what the browser sees
+    print(f"Searching for: {ORIGIN} -> {DEST} on {DATE}")
+
+    page.get_by_placeholder("Origem").fill(ORIGIN)
+    page.get_by_role("option", name=ORIGIN).click()
+    
+    time.sleep(0.5)
+    
+    page.get_by_placeholder("Destino").fill(DEST)
+    page.get_by_role("option", name=DEST).click()
+    
+    time.sleep(0.5)
+    
+    page.locator("#ida").fill(DATE)
+    
+    time.sleep(0.5)
+    page.click('[aria-label="Pesquisar viagens"]') 
+    time.sleep(0.5)
+
     page.screenshot(path="cp_screenshot.png")
     print("Screenshot saved as 'cp_screenshot.png'")
     
