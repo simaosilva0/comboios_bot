@@ -3,6 +3,7 @@ import time
 import os
 import string
 from datetime import datetime
+import requests
 
 # read variables from env, if it isnt set use default values
 ORIGIN = os.environ.get("ORIGIN", "Espinho")
@@ -22,6 +23,15 @@ def compare_hours(hour_str, lower_str, upper_str):
 
     return lower <= hour <= upper
 
+def send_notification(title, message):
+    requests.post(
+        "https://ntfy.sh/seats-available-1011",
+        data=message,
+        headers={
+            "Title": title,
+            "Priority": "high", # makes your phone buzz
+        }
+    )
 
 def run(playwright: Playwright):
     browser = playwright.chromium.launch(headless=False)
@@ -33,6 +43,8 @@ def run(playwright: Playwright):
     page.locator("#onetrust-accept-btn-handler").click()
 
     print(f"Searching for: {ORIGIN} -> {DEST} on {DATE}")
+    
+    time.sleep(1)
 
     page.get_by_placeholder("Origem").fill(ORIGIN)
     page.get_by_role("option", name=ORIGIN, exact=True).click()
@@ -82,7 +94,7 @@ def run(playwright: Playwright):
 
             break  # stop after checking the first match
         
-    time.sleep(1)    
+    time.sleep(2)    
         
     sold_out_locator = page.get_by_role("button", name="Voltar aos resultados")
     
@@ -91,6 +103,7 @@ def run(playwright: Playwright):
     else:
         # success
         print("Success! Seats are available. Sending notification...")
+        send_notification("Seats found!", "Go buy your tickets!")
 
     print("Scrape complete.")
     browser.close()
